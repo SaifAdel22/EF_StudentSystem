@@ -17,6 +17,7 @@ namespace StudentSystem.Data
         public virtual DbSet<Student>Students { get; set; }
         public virtual DbSet<HomeWork>HomeWorks { get; set; }
         public virtual DbSet<Resource>Resources { get; set; }
+        public virtual DbSet<License> Licenses { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

@@ -15,6 +15,7 @@ namespace StudentSystem.Entities
         public virtual string URL { get; set; }
         public virtual int CourseId {get; set; }
         public virtual Course? Course { get; set; }
+        public virtual List<License> Licenses { get; set; } = new List<License>();
 
     }
     public enum ResourceType
