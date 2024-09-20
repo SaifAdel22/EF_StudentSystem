@@ -96,23 +96,32 @@ namespace StudentSystem
                                 //Task4
 
                                 var GivenDate = new DateTime(2024, 8, 20);
-                                var course = context.Courses.Include(x => x.StudentCourses)
+
+                                // Fetch data from the database first
+                                var courses = context.Courses
                                     .Where(x => x.StartDate <= GivenDate && x.EndDate >= GivenDate)
                                     .Select(x => new
                                     {
                                         x.Name,
                                         x.StartDate,
                                         x.EndDate,
-                                        Duration = Duration(x.StartDate, x.EndDate),
-                                        NumOfStudent = x.StudentCourses.Count
-                                    }).OrderByDescending(x => x.NumOfStudent)
-                                    //.ThenByDescending(x=> (x.EndDate - x.StartDate).Days)
+                                        NumOfStudents = x.StudentCourses.Count // Perform this on the database side
+                                    })
+                                    .AsEnumerable() // Switch to in-memory evaluation
+                                    .Select(x => new
+                                    {
+                                        x.Name,
+                                        x.NumOfStudents,
+                                        Duration = (x.EndDate - x.StartDate).TotalDays // Calculate duration in memory
+                                    })
+                                    .OrderByDescending(x => x.NumOfStudents) // Order in-memory
+                                    .ThenByDescending(x => x.Duration)
                                     .ToList();
 
-                                foreach (var item in course)
+                                // Output the result
+                                foreach (var course in courses)
                                 {
-                                    Console.WriteLine($"{item.Name}: {item.NumOfStudent} students enrolled, Duration: {item.Duration} days");
-
+                                    Console.WriteLine($"{course.Name}: {course.NumOfStudents} students enrolled, Duration: {course.Duration} days");
                                 }
                                 break;
 
@@ -196,6 +205,8 @@ namespace StudentSystem
                                 break;
 
                         }
+                        Console.WriteLine("----------------------------------------------------");
+
                     }
 
                     ////Task 6
